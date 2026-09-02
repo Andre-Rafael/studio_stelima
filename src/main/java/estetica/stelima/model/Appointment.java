@@ -4,19 +4,23 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import estetica.stelima.model.enums.ScheduleStatus;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "AGENDAMENTO")
-public class Agendamento implements Serializable {
+@Table(name = "APPOINTMENT")
+public class Appointment implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(name = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private Date date;
 
     @Column(name = "HORA_INICIO", nullable = false)
@@ -32,15 +36,15 @@ public class Agendamento implements Serializable {
     private String obs;
 
     @Column(name = "ROOM_ID", nullable = false)
-    private Long salaId;
+    private UUID salaId;
 
-    // @ManyToOne
-    // @JoinColumn(name = "CLIENT_ID", nullable = false)
-    @Column(name = "CLIENT_ID", nullable = false)
-    private Long clienteId;
+    @ManyToOne
+    @JoinColumn(name = "CLIENT_ID", nullable = false)
+    private Client cliente;
 
-    @Column(name = "PROFISSIONAL_ID", nullable = false)
-    private Long profissionalId;
+    @ManyToOne
+    @JoinColumn(name = "PROFISSIONAL_ID", nullable = false)
+    private Professional profissional;
 
     @Column(name = "CREATE_AT", nullable = false)
     private LocalDateTime criadoEm;
@@ -48,15 +52,19 @@ public class Agendamento implements Serializable {
     @Column(name = "UPDATED_AT", nullable = false)
     private LocalDateTime atualizadoEm;
 
-    public Agendamento(){
+    @ManyToOne
+    @JoinColumn(name = "SERVICO_ID", nullable = false)
+    private Offering offering;
+
+    public Appointment(){
 
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -100,28 +108,28 @@ public class Agendamento implements Serializable {
         this.obs = obs;
     }
 
-    public Long getSalaId() {
+    public UUID getSalaId() {
         return salaId;
     }
 
-    public void setSalaId(Long salaId) {
+    public void setSalaId(UUID salaId) {
         this.salaId = salaId;
     }
 
-    public Long getClienteId() {
-        return clienteId;
+    public Client getCliente() {
+        return cliente;
     }
 
-    public void setClienteId(Long clienteId) {
-        this.clienteId = clienteId;
+    public void setCliente(Client cliente) {
+        this.cliente = cliente;
     }
 
-    public Long getProfissionalId() {
-        return profissionalId;
+    public Professional getProfissional() {
+        return profissional;
     }
 
-    public void setProfissionalId(Long profissionalId) {
-        this.profissionalId = profissionalId;
+    public void setProfissional(Professional profissional) {
+        this.profissional = profissional;
     }
 
     public LocalDateTime getCriadoEm() {
@@ -140,6 +148,14 @@ public class Agendamento implements Serializable {
         this.atualizadoEm = atualizadoEm;
     }
 
+    public Offering getOffering() {
+        return offering;
+    }
+
+    public void setOffering(Offering servico) {
+        this.offering = servico;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -151,8 +167,8 @@ public class Agendamento implements Serializable {
         result = prime * result + ((status == null) ? 0 : status.hashCode());
         result = prime * result + ((obs == null) ? 0 : obs.hashCode());
         result = prime * result + ((salaId == null) ? 0 : salaId.hashCode());
-        result = prime * result + ((clienteId == null) ? 0 : clienteId.hashCode());
-        result = prime * result + ((profissionalId == null) ? 0 : profissionalId.hashCode());
+        result = prime * result + ((cliente == null) ? 0 : cliente.hashCode());
+        result = prime * result + ((profissional == null) ? 0 : profissional.hashCode());
         result = prime * result + ((criadoEm == null) ? 0 : criadoEm.hashCode());
         result = prime * result + ((atualizadoEm == null) ? 0 : atualizadoEm.hashCode());
         return result;
@@ -166,7 +182,7 @@ public class Agendamento implements Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        Agendamento other = (Agendamento) obj;
+        Appointment other = (Appointment) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -199,15 +215,15 @@ public class Agendamento implements Serializable {
                 return false;
         } else if (!salaId.equals(other.salaId))
             return false;
-        if (clienteId == null) {
-            if (other.clienteId != null)
+        if (cliente == null) {
+            if (other.cliente != null)
                 return false;
-        } else if (!clienteId.equals(other.clienteId))
+        } else if (!cliente.equals(other.cliente))
             return false;
-        if (profissionalId == null) {
-            if (other.profissionalId != null)
+        if (profissional == null) {
+            if (other.profissional != null)
                 return false;
-        } else if (!profissionalId.equals(other.profissionalId))
+        } else if (!profissional.equals(other.profissional))
             return false;
         if (criadoEm == null) {
             if (other.criadoEm != null)
@@ -221,6 +237,4 @@ public class Agendamento implements Serializable {
             return false;
         return true;
     }
-
-    
 }
