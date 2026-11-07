@@ -1,0 +1,7 @@
+target
+uploads
+*.db
+.mvn
+mvnw
+mvnw.cmd
+HELP.md

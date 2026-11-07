@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    container_name: stelima-backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:sqlite:/app/data/stelima.db
+      FILE_UPLOADDIR: /app/data/uploads
+    volumes:
+      - stelima-data:/app/data
+    ports:
+      - "8080:8080" # opcional: acesso direto à API (Postman, etc.)
+
+  frontend:
+    build: ./frontend
+    container_name: stelima-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
+volumes:
+  stelima-data:
